@@ -13,6 +13,7 @@ import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RequisitionsNewRouteImport } from './routes/requisitions.new'
+import { Route as RequisitionsIdRouteImport } from './routes/requisitions.$id'
 
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
@@ -34,17 +35,24 @@ const RequisitionsNewRoute = RequisitionsNewRouteImport.update({
   path: '/requisitions/new',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RequisitionsIdRoute = RequisitionsIdRouteImport.update({
+  id: '/requisitions/$id',
+  path: '/requisitions/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
+  '/requisitions/$id': typeof RequisitionsIdRoute
   '/requisitions/new': typeof RequisitionsNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
+  '/requisitions/$id': typeof RequisitionsIdRoute
   '/requisitions/new': typeof RequisitionsNewRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,33 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
+  '/requisitions/$id': typeof RequisitionsIdRoute
   '/requisitions/new': typeof RequisitionsNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/dashboard' | '/requisitions/new'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/requisitions/$id'
+    | '/requisitions/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/dashboard' | '/requisitions/new'
-  id: '__root__' | '/' | '/auth' | '/dashboard' | '/requisitions/new'
+  to: '/' | '/auth' | '/dashboard' | '/requisitions/$id' | '/requisitions/new'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/requisitions/$id'
+    | '/requisitions/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   DashboardRoute: typeof DashboardRoute
+  RequisitionsIdRoute: typeof RequisitionsIdRoute
   RequisitionsNewRoute: typeof RequisitionsNewRoute
 }
 
@@ -99,6 +120,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RequisitionsNewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/requisitions/$id': {
+      id: '/requisitions/$id'
+      path: '/requisitions/$id'
+      fullPath: '/requisitions/$id'
+      preLoaderRoute: typeof RequisitionsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -106,6 +134,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   DashboardRoute: DashboardRoute,
+  RequisitionsIdRoute: RequisitionsIdRoute,
   RequisitionsNewRoute: RequisitionsNewRoute,
 }
 export const routeTree = rootRouteImport
