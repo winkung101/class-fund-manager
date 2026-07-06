@@ -14,16 +14,123 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string
+          id: string
+          is_available: boolean
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          full_name: string
+          id: string
+          is_available?: boolean
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string
+          id?: string
+          is_available?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      requisitions: {
+        Row: {
+          amount: number
+          approved_at: string | null
+          approved_by: string | null
+          bank_account_info: string
+          created_at: string
+          description: string
+          id: string
+          reject_reason: string | null
+          requester_id: string
+          status: Database["public"]["Enums"]["requisition_status"]
+          title: string
+          treasurer_id: string | null
+          treasurer_notes: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          approved_at?: string | null
+          approved_by?: string | null
+          bank_account_info: string
+          created_at?: string
+          description: string
+          id?: string
+          reject_reason?: string | null
+          requester_id: string
+          status?: Database["public"]["Enums"]["requisition_status"]
+          title: string
+          treasurer_id?: string | null
+          treasurer_notes?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          approved_at?: string | null
+          approved_by?: string | null
+          bank_account_info?: string
+          created_at?: string
+          description?: string
+          id?: string
+          reject_reason?: string | null
+          requester_id?: string
+          status?: Database["public"]["Enums"]["requisition_status"]
+          title?: string
+          treasurer_id?: string | null
+          treasurer_notes?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      president_is_available: { Args: never; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "student" | "treasurer" | "president" | "vice_president"
+      requisition_status:
+        | "pending_treasurer"
+        | "pending_president"
+        | "approved"
+        | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +257,14 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["student", "treasurer", "president", "vice_president"],
+      requisition_status: [
+        "pending_treasurer",
+        "pending_president",
+        "approved",
+        "rejected",
+      ],
+    },
   },
 } as const
