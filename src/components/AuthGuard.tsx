@@ -1,11 +1,8 @@
-import { createFileRoute, Navigate } from "@tanstack/react-router";
+import { Navigate } from "@tanstack/react-router";
 import { useSession } from "@/hooks/use-auth";
+import type { ReactNode } from "react";
 
-export const Route = createFileRoute("/")({
-  component: Index,
-});
-
-function Index() {
+export function AuthGuard({ children }: { children: ReactNode }) {
   const { session, loading } = useSession();
   if (loading) {
     return (
@@ -14,5 +11,6 @@ function Index() {
       </div>
     );
   }
-  return <Navigate to={session ? "/dashboard" : "/auth"} replace />;
+  if (!session) return <Navigate to="/auth" replace />;
+  return <>{children}</>;
 }
