@@ -140,5 +140,40 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family:
+      "Sarabun",
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      "Segoe UI",
+      Roboto,
+      "Noto Sans Thai",
+      "Helvetica Neue",
+      Arial,
+      sans-serif;
   }
 }
+
+@media print {
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
+  html,
+  body {
+    background: white !important;
+  }
+  body * {
+    visibility: hidden;
+  }
+  .printable-doc,
+  .printable-doc * {
+    visibility: visible;
+  }
+  .printable-doc {
+    position: absolute;
+    inset: 0;
+    display: block !important;
+  }
+}
+
