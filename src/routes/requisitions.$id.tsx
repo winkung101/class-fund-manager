@@ -116,29 +116,37 @@ function RequisitionDetail() {
   const handleApprove = async () => {
     try {
       const isVP = userRole === 'vice_president';
-      const isPresident = userRole === 'president';
       const now = new Date().toISOString();
 
-      if (isVP) {
-        if (!requisition?.vp_1_id) {
-          const { error } = await supabase.from('requisitions').update({ vp_1_id: user?.id } as any).eq('id', id);
-          if (error) throw error;
-          toast.success('บันทึกการอนุมัติสำเร็จ รอรองประธานคนที่ 2 อนุมัติ');
-        } else if (requisition.vp_1_id !== user?.id && !requisition?.vp_2_id) {
-          const { error } = await supabase.from('requisitions').update({ vp_2_id: user?.id, status: 'approved', approved_at: now } as any).eq('id', id);
-          if (error) throw error;
-          toast.success('อนุมัติใบเบิกเงินเสร็จสมบูรณ์');
-        }
-      } else if (isPresident) {
-        const { error } = await supabase.from('requisitions').update({ status: 'approved', approved_by: user?.id, approved_at: now } as any).eq('id', id);
+      if (!isVP) {
+        toast.error('การอนุมัติสงวนสิทธิ์ให้เฉพาะรองประธานชั้นปี 2 คนเท่านั้น');
+        return;
+      }
+
+      if (!requisition?.vp_1_id) {
+        const { error } = await supabase
+          .from('requisitions')
+          .update({ vp_1_id: user?.id } as any)
+          .eq('id', id);
         if (error) throw error;
-        toast.success('อนุมัติใบเบิกเงินเสร็จสมบูรณ์');
+        toast.success('บันทึกการอนุมัติของรองประธานคนที่ 1 แล้ว รอรองประธานคนที่ 2 อนุมัติ');
+      } else if (requisition.vp_1_id === user?.id) {
+        toast.error('คุณได้อนุมัติในฐานะรองประธานคนที่ 1 แล้ว ต้องรอรองประธานอีกคนอนุมัติ');
+        return;
+      } else if (!requisition?.vp_2_id) {
+        const { error } = await supabase
+          .from('requisitions')
+          .update({ vp_2_id: user?.id, status: 'approved', approved_at: now } as any)
+          .eq('id', id);
+        if (error) throw error;
+        toast.success('อนุมัติใบเบิกเงินเสร็จสมบูรณ์ (รองประธาน 2 คน)');
       }
       queryClient.invalidateQueries({ queryKey: ['requisition', id] });
     } catch (error: any) {
       toast.error(error.message || 'เกิดข้อผิดพลาดในการอนุมัติ');
     }
   };
+
 
   const handleReject = async () => {
     const reason = window.prompt('กรุณาระบุเหตุผลที่ไม่อนุมัติ:');
@@ -314,24 +322,24 @@ function RequisitionDetail() {
 
           {/* Action Buttons for Approvers */}
           <div className="mt-8 pt-6 border-t border-gray-100">
-            {(userRole === 'president' || userRole === 'vice_president') && requisition.status === 'pending_president' ? (
+            {userRole === 'vice_president' && requisition.status === 'pending_president' ? (
               <div className="flex flex-col sm:flex-row gap-4">
                 {isVp1AlreadyApproved && isWaitingForVp2 ? (
                   <Button disabled className="w-full sm:w-auto bg-gray-300 text-gray-600 cursor-not-allowed">
                     รอรองประธานคนที่ 2 อนุมัติ
                   </Button>
                 ) : (
-                  <Button 
-                    onClick={handleApprove} 
+                  <Button
+                    onClick={handleApprove}
                     className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white shadow-sm"
                   >
-                    {requisition.vp_1_id ? 'อนุมัติใบเบิกเงิน (คนที่ 2)' : 'อนุมัติใบเบิกเงิน'}
+                    {requisition.vp_1_id ? 'อนุมัติใบเบิกเงิน (รองประธานคนที่ 2)' : 'อนุมัติใบเบิกเงิน (รองประธานคนที่ 1)'}
                   </Button>
                 )}
-                
-                <Button 
-                  onClick={handleReject} 
-                  variant="outline" 
+
+                <Button
+                  onClick={handleReject}
+                  variant="outline"
                   className="w-full sm:w-auto border-red-200 text-red-600 hover:bg-red-50"
                   disabled={isVp1AlreadyApproved && isWaitingForVp2}
                 >
@@ -340,15 +348,16 @@ function RequisitionDetail() {
               </div>
             ) : requisition.status === 'pending_president' ? (
               <div className="text-sm text-gray-500 bg-gray-50 p-4 rounded-lg border border-gray-200 text-center">
-                 ⚠️ บัญชีของคุณขณะนี้มีสิทธิ์เป็น <b>"{userRole || 'ไม่มีสิทธิ์'}"</b> จึงไม่สามารถกดอนุมัติได้ (สงวนสิทธิ์เฉพาะประธานและรองประธานชั้นปี)
+                 ⚠️ ใบเบิกเงินต้องได้รับการอนุมัติจาก <b>รองประธานชั้นปี 2 คน</b> เท่านั้น (บัญชีของคุณคือ "{userRole || 'ไม่มีสิทธิ์'}")
               </div>
             ) : null}
+
           </div>
         </div>
       </div>
 
       {/* ===== Print View (Web Hidden) ===== */}
-      <div className="hidden print:block bg-white text-black p-0 m-0">
+      <div className="hidden print:block printable-doc bg-white text-black p-0 m-0">
         <div className="text-center mb-8 border-b border-black pb-6">
           <h1 className="text-2xl font-bold mb-2">ใบเบิกเงินกองทุนชั้นปี</h1>
           <p className="text-gray-600">รหัสเอกสาร: {shortId}</p>
@@ -371,7 +380,7 @@ function RequisitionDetail() {
           </div>
           <div>
             <p className="text-sm font-semibold mb-1">รายละเอียด / เหตุผล</p>
-            <p className="pt-1">{requisition.description}</p>
+            <p className="pt-1 whitespace-pre-line">{requisition.description}</p>
           </div>
           <div className="grid grid-cols-2 gap-6">
             <div>
@@ -386,36 +395,31 @@ function RequisitionDetail() {
         </div>
 
         {requisition.status === 'approved' && (
-          <div className="mt-20 pt-8 border-t border-black grid grid-cols-2 gap-8 text-center">
-            <div>
-              <p className="mb-12">ผู้ตรวจสอบ (เหรัญญิก)</p>
-              <p>...................................................</p>
-              <p className="mt-2 text-sm">( เหรัญญิกชั้นปี )</p>
+          <div className="mt-16 pt-8 border-t border-black">
+            <div className="grid grid-cols-3 gap-6 text-center text-sm">
+              <div>
+                <p className="mb-12">ผู้ตรวจสอบ</p>
+                <p>.......................................</p>
+                <p className="mt-2">( เหรัญญิกชั้นปี )</p>
+              </div>
+              <div>
+                <p className="mb-12">ผู้อนุมัติคนที่ 1</p>
+                <p className="font-bold">{requisition.vp1?.full_name || '.......................................'}</p>
+                <p className="mt-2">( รองประธานชั้นปี คนที่ 1 )</p>
+              </div>
+              <div>
+                <p className="mb-12">ผู้อนุมัติคนที่ 2</p>
+                <p className="font-bold">{requisition.vp2?.full_name || '.......................................'}</p>
+                <p className="mt-2">( รองประธานชั้นปี คนที่ 2 )</p>
+              </div>
             </div>
-            <div>
-              <p className="mb-12">ผู้อนุมัติ</p>
-              {requisition.approved_by && (
-                <>
-                  <p className="font-bold">{requisition.president?.full_name}</p>
-                  <p className="mt-2 text-sm">( ประธานชั้นปี )</p>
-                </>
-              )}
-              {requisition.vp_1_id && requisition.vp_2_id && (
-                <div className="flex justify-center gap-8 text-sm">
-                  <div>
-                    <p className="font-bold">{requisition.vp1?.full_name}</p>
-                    <p className="mt-1">(รองประธานคนที่ 1)</p>
-                  </div>
-                  <div>
-                    <p className="font-bold">{requisition.vp2?.full_name}</p>
-                    <p className="mt-1">(รองประธานคนที่ 2)</p>
-                  </div>
-                </div>
-              )}
-            </div>
+            <p className="text-center text-xs text-gray-600 mt-8">
+              อนุมัติเมื่อ {formatThaiDateTime(requisition.approved_at)}
+            </p>
           </div>
         )}
       </div>
+
 
     </div>
   );
