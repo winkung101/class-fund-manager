@@ -322,24 +322,24 @@ function RequisitionDetail() {
 
           {/* Action Buttons for Approvers */}
           <div className="mt-8 pt-6 border-t border-gray-100">
-            {(userRole === 'president' || userRole === 'vice_president') && requisition.status === 'pending_president' ? (
+            {userRole === 'vice_president' && requisition.status === 'pending_president' ? (
               <div className="flex flex-col sm:flex-row gap-4">
                 {isVp1AlreadyApproved && isWaitingForVp2 ? (
                   <Button disabled className="w-full sm:w-auto bg-gray-300 text-gray-600 cursor-not-allowed">
                     รอรองประธานคนที่ 2 อนุมัติ
                   </Button>
                 ) : (
-                  <Button 
-                    onClick={handleApprove} 
+                  <Button
+                    onClick={handleApprove}
                     className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white shadow-sm"
                   >
-                    {requisition.vp_1_id ? 'อนุมัติใบเบิกเงิน (คนที่ 2)' : 'อนุมัติใบเบิกเงิน'}
+                    {requisition.vp_1_id ? 'อนุมัติใบเบิกเงิน (รองประธานคนที่ 2)' : 'อนุมัติใบเบิกเงิน (รองประธานคนที่ 1)'}
                   </Button>
                 )}
-                
-                <Button 
-                  onClick={handleReject} 
-                  variant="outline" 
+
+                <Button
+                  onClick={handleReject}
+                  variant="outline"
                   className="w-full sm:w-auto border-red-200 text-red-600 hover:bg-red-50"
                   disabled={isVp1AlreadyApproved && isWaitingForVp2}
                 >
@@ -348,9 +348,10 @@ function RequisitionDetail() {
               </div>
             ) : requisition.status === 'pending_president' ? (
               <div className="text-sm text-gray-500 bg-gray-50 p-4 rounded-lg border border-gray-200 text-center">
-                 ⚠️ บัญชีของคุณขณะนี้มีสิทธิ์เป็น <b>"{userRole || 'ไม่มีสิทธิ์'}"</b> จึงไม่สามารถกดอนุมัติได้ (สงวนสิทธิ์เฉพาะประธานและรองประธานชั้นปี)
+                 ⚠️ ใบเบิกเงินต้องได้รับการอนุมัติจาก <b>รองประธานชั้นปี 2 คน</b> เท่านั้น (บัญชีของคุณคือ "{userRole || 'ไม่มีสิทธิ์'}")
               </div>
             ) : null}
+
           </div>
         </div>
       </div>
