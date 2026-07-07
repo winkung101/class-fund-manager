@@ -357,7 +357,7 @@ function RequisitionDetail() {
       </div>
 
       {/* ===== Print View (Web Hidden) ===== */}
-      <div className="hidden print:block bg-white text-black p-0 m-0">
+      <div className="hidden print:block printable-doc bg-white text-black p-0 m-0">
         <div className="text-center mb-8 border-b border-black pb-6">
           <h1 className="text-2xl font-bold mb-2">ใบเบิกเงินกองทุนชั้นปี</h1>
           <p className="text-gray-600">รหัสเอกสาร: {shortId}</p>
@@ -380,7 +380,7 @@ function RequisitionDetail() {
           </div>
           <div>
             <p className="text-sm font-semibold mb-1">รายละเอียด / เหตุผล</p>
-            <p className="pt-1">{requisition.description}</p>
+            <p className="pt-1 whitespace-pre-line">{requisition.description}</p>
           </div>
           <div className="grid grid-cols-2 gap-6">
             <div>
@@ -395,36 +395,31 @@ function RequisitionDetail() {
         </div>
 
         {requisition.status === 'approved' && (
-          <div className="mt-20 pt-8 border-t border-black grid grid-cols-2 gap-8 text-center">
-            <div>
-              <p className="mb-12">ผู้ตรวจสอบ (เหรัญญิก)</p>
-              <p>...................................................</p>
-              <p className="mt-2 text-sm">( เหรัญญิกชั้นปี )</p>
+          <div className="mt-16 pt-8 border-t border-black">
+            <div className="grid grid-cols-3 gap-6 text-center text-sm">
+              <div>
+                <p className="mb-12">ผู้ตรวจสอบ</p>
+                <p>.......................................</p>
+                <p className="mt-2">( เหรัญญิกชั้นปี )</p>
+              </div>
+              <div>
+                <p className="mb-12">ผู้อนุมัติคนที่ 1</p>
+                <p className="font-bold">{requisition.vp1?.full_name || '.......................................'}</p>
+                <p className="mt-2">( รองประธานชั้นปี คนที่ 1 )</p>
+              </div>
+              <div>
+                <p className="mb-12">ผู้อนุมัติคนที่ 2</p>
+                <p className="font-bold">{requisition.vp2?.full_name || '.......................................'}</p>
+                <p className="mt-2">( รองประธานชั้นปี คนที่ 2 )</p>
+              </div>
             </div>
-            <div>
-              <p className="mb-12">ผู้อนุมัติ</p>
-              {requisition.approved_by && (
-                <>
-                  <p className="font-bold">{requisition.president?.full_name}</p>
-                  <p className="mt-2 text-sm">( ประธานชั้นปี )</p>
-                </>
-              )}
-              {requisition.vp_1_id && requisition.vp_2_id && (
-                <div className="flex justify-center gap-8 text-sm">
-                  <div>
-                    <p className="font-bold">{requisition.vp1?.full_name}</p>
-                    <p className="mt-1">(รองประธานคนที่ 1)</p>
-                  </div>
-                  <div>
-                    <p className="font-bold">{requisition.vp2?.full_name}</p>
-                    <p className="mt-1">(รองประธานคนที่ 2)</p>
-                  </div>
-                </div>
-              )}
-            </div>
+            <p className="text-center text-xs text-gray-600 mt-8">
+              อนุมัติเมื่อ {formatThaiDateTime(requisition.approved_at)}
+            </p>
           </div>
         )}
       </div>
+
 
     </div>
   );
