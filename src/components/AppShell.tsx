@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { LogOut, Wallet, LayoutDashboard, PlusCircle } from "lucide-react";
+import { LogOut, Wallet, LayoutDashboard, PlusCircle, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useProfile, useMyRole, useSession } from "@/hooks/use-auth";
