@@ -84,13 +84,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "ระบบขออนุมัติเบิกเงินชั้นปีของมหาวิทยาลัย พร้อมขั้นตอนอนุมัติโดยเหรัญญิกและประธานชั้นปี",
       },
-      { property: "og:title", content: "ระบบเบิกเงินชั้นปี" },
+      { property: "og:title", content: "ระบบเบิกเงินชั้นปี | Class Fund Requisition" },
       {
         property: "og:description",
         content: "จัดการคำขอเบิกเงินชั้นปี ตรวจสอบและอนุมัติออนไลน์",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "ระบบเบิกเงินชั้นปี | Class Fund Requisition" },
+      { name: "description", content: "ระบบขออนุมัติเบิกเงินชั้นปี" },
+      { property: "og:description", content: "ระบบขออนุมัติเบิกเงินชั้นปี" },
+      { name: "twitter:description", content: "ระบบขออนุมัติเบิกเงินชั้นปี" },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/df3f97d3-746f-48d8-a8d9-4a13499d9a38/id-preview-47d96522--4a177995-ac49-4f02-a649-8ae1a9643cbd.lovable.app-1783432063873.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/df3f97d3-746f-48d8-a8d9-4a13499d9a38/id-preview-47d96522--4a177995-ac49-4f02-a649-8ae1a9643cbd.lovable.app-1783432063873.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
