@@ -20,6 +20,7 @@ export type Database = {
           full_name: string
           id: string
           is_available: boolean
+          role: string | null
           updated_at: string
         }
         Insert: {
@@ -27,6 +28,7 @@ export type Database = {
           full_name: string
           id: string
           is_available?: boolean
+          role?: string | null
           updated_at?: string
         }
         Update: {
@@ -34,6 +36,7 @@ export type Database = {
           full_name?: string
           id?: string
           is_available?: boolean
+          role?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -54,6 +57,8 @@ export type Database = {
           treasurer_id: string | null
           treasurer_notes: string | null
           updated_at: string
+          vp_1_id: string | null
+          vp_2_id: string | null
         }
         Insert: {
           amount: number
@@ -70,6 +75,8 @@ export type Database = {
           treasurer_id?: string | null
           treasurer_notes?: string | null
           updated_at?: string
+          vp_1_id?: string | null
+          vp_2_id?: string | null
         }
         Update: {
           amount?: number
@@ -86,6 +93,8 @@ export type Database = {
           treasurer_id?: string | null
           treasurer_notes?: string | null
           updated_at?: string
+          vp_1_id?: string | null
+          vp_2_id?: string | null
         }
         Relationships: []
       }
@@ -115,13 +124,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
+      has_role:
+        | {
+            Args: {
+              _role: Database["public"]["Enums"]["app_role"]
+              _user_id: string
+            }
+            Returns: boolean
+          }
+        | { Args: { allowed_role: string }; Returns: boolean }
+        | { Args: { allowed_roles: string[] }; Returns: boolean }
       president_is_available: { Args: never; Returns: boolean }
     }
     Enums: {

@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UsersRouteImport } from './routes/users'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RequisitionsNewRouteImport } from './routes/requisitions.new'
 import { Route as RequisitionsIdRouteImport } from './routes/requisitions.$id'
 
+const UsersRoute = UsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
+  '/users': typeof UsersRoute
   '/requisitions/$id': typeof RequisitionsIdRoute
   '/requisitions/new': typeof RequisitionsNewRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
+  '/users': typeof UsersRoute
   '/requisitions/$id': typeof RequisitionsIdRoute
   '/requisitions/new': typeof RequisitionsNewRoute
 }
@@ -60,20 +68,33 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof DashboardRoute
+  '/users': typeof UsersRoute
   '/requisitions/$id': typeof RequisitionsIdRoute
   '/requisitions/new': typeof RequisitionsNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/auth' | '/dashboard' | '/requisitions/$id' | '/requisitions/new'
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/users'
+    | '/requisitions/$id'
+    | '/requisitions/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/dashboard' | '/requisitions/$id' | '/requisitions/new'
+  to:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/users'
+    | '/requisitions/$id'
+    | '/requisitions/new'
   id:
     | '__root__'
     | '/'
     | '/auth'
     | '/dashboard'
+    | '/users'
     | '/requisitions/$id'
     | '/requisitions/new'
   fileRoutesById: FileRoutesById
@@ -82,12 +103,20 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
   DashboardRoute: typeof DashboardRoute
+  UsersRoute: typeof UsersRoute
   RequisitionsIdRoute: typeof RequisitionsIdRoute
   RequisitionsNewRoute: typeof RequisitionsNewRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/users': {
+      id: '/users'
+      path: '/users'
+      fullPath: '/users'
+      preLoaderRoute: typeof UsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dashboard': {
       id: '/dashboard'
       path: '/dashboard'
@@ -130,19 +159,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
   DashboardRoute: DashboardRoute,
+  UsersRoute: UsersRoute,
   RequisitionsIdRoute: RequisitionsIdRoute,
   RequisitionsNewRoute: RequisitionsNewRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

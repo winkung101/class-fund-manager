@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { LogOut, Wallet, LayoutDashboard, PlusCircle } from "lucide-react";
+import { LogOut, Wallet, LayoutDashboard, PlusCircle, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useProfile, useMyRole, useSession } from "@/hooks/use-auth";
@@ -49,6 +49,14 @@ export function AppShell({ children }: { children: ReactNode }) {
                 สร้างคำขอ
               </Button>
             </Link>
+            {role === "president" && (
+              <Link to="/users">
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <Users className="h-4 w-4" />
+                  จัดการผู้ใช้
+                </Button>
+              </Link>
+            )}
             <div className="mx-2 hidden text-right sm:block">
               <div className="text-sm font-medium">{profile?.full_name ?? "..."}</div>
               <div className="text-xs text-muted-foreground">
