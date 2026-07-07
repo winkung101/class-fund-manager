@@ -116,29 +116,37 @@ function RequisitionDetail() {
   const handleApprove = async () => {
     try {
       const isVP = userRole === 'vice_president';
-      const isPresident = userRole === 'president';
       const now = new Date().toISOString();
 
-      if (isVP) {
-        if (!requisition?.vp_1_id) {
-          const { error } = await supabase.from('requisitions').update({ vp_1_id: user?.id } as any).eq('id', id);
-          if (error) throw error;
-          toast.success('บันทึกการอนุมัติสำเร็จ รอรองประธานคนที่ 2 อนุมัติ');
-        } else if (requisition.vp_1_id !== user?.id && !requisition?.vp_2_id) {
-          const { error } = await supabase.from('requisitions').update({ vp_2_id: user?.id, status: 'approved', approved_at: now } as any).eq('id', id);
-          if (error) throw error;
-          toast.success('อนุมัติใบเบิกเงินเสร็จสมบูรณ์');
-        }
-      } else if (isPresident) {
-        const { error } = await supabase.from('requisitions').update({ status: 'approved', approved_by: user?.id, approved_at: now } as any).eq('id', id);
+      if (!isVP) {
+        toast.error('การอนุมัติสงวนสิทธิ์ให้เฉพาะรองประธานชั้นปี 2 คนเท่านั้น');
+        return;
+      }
+
+      if (!requisition?.vp_1_id) {
+        const { error } = await supabase
+          .from('requisitions')
+          .update({ vp_1_id: user?.id } as any)
+          .eq('id', id);
         if (error) throw error;
-        toast.success('อนุมัติใบเบิกเงินเสร็จสมบูรณ์');
+        toast.success('บันทึกการอนุมัติของรองประธานคนที่ 1 แล้ว รอรองประธานคนที่ 2 อนุมัติ');
+      } else if (requisition.vp_1_id === user?.id) {
+        toast.error('คุณได้อนุมัติในฐานะรองประธานคนที่ 1 แล้ว ต้องรอรองประธานอีกคนอนุมัติ');
+        return;
+      } else if (!requisition?.vp_2_id) {
+        const { error } = await supabase
+          .from('requisitions')
+          .update({ vp_2_id: user?.id, status: 'approved', approved_at: now } as any)
+          .eq('id', id);
+        if (error) throw error;
+        toast.success('อนุมัติใบเบิกเงินเสร็จสมบูรณ์ (รองประธาน 2 คน)');
       }
       queryClient.invalidateQueries({ queryKey: ['requisition', id] });
     } catch (error: any) {
       toast.error(error.message || 'เกิดข้อผิดพลาดในการอนุมัติ');
     }
   };
+
 
   const handleReject = async () => {
     const reason = window.prompt('กรุณาระบุเหตุผลที่ไม่อนุมัติ:');
