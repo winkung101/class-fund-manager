@@ -108,7 +108,7 @@ function RequisitionDetail() {
   });
 
   const requisition = requisitionData as any;
-  const userRole = userProfile?.role;
+  const userRole = userRoleData;
 
   const isVp1AlreadyApproved = userRole === 'vice_president' && requisition?.vp_1_id === user?.id;
   const isWaitingForVp2 = requisition?.vp_1_id && !requisition?.vp_2_id;
