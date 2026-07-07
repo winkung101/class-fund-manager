@@ -48,22 +48,24 @@ function RequisitionDetail() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // ดึง Profile ของผู้ใช้ปัจจุบันเพื่อเช็ค Role
-  const { data: userProfile } = useQuery({
-    queryKey: ['profile', user?.id],
+  // ดึง Role ของผู้ใช้ปัจจุบันจากตาราง user_roles (แหล่งข้อมูลบทบาทที่แท้จริง)
+  const { data: userRoleData } = useQuery({
+    queryKey: ['my-role-detail', user?.id],
     queryFn: async () => {
       if (!user?.id) return null;
       const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single();
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id);
       if (error) throw error;
-      return data;
+      const roles = (data ?? []).map((r) => r.role as string);
+      const priority = ['president', 'vice_president', 'treasurer', 'student'];
+      for (const p of priority) if (roles.includes(p)) return p;
+      return 'student';
     },
     enabled: !!user?.id,
-    refetchOnWindowFocus: true, // เพิ่มบรรทัดนี้: บังคับโหลดใหม่เมื่อกลับมาเปิดหน้านี้
-    staleTime: 0, // เพิ่มบรรทัดนี้: บอกว่าข้อมูลเก่าทันที ไม่ต้องจำ
+    staleTime: 0,
+    refetchOnWindowFocus: true,
   });
 
   // ดึงข้อมูลใบเบิกเงิน พร้อมข้อมูลผู้ที่เกี่ยวข้อง
