@@ -54,11 +54,17 @@ export type Database = {
           requester_id: string
           status: Database["public"]["Enums"]["requisition_status"]
           title: string
+          treasurer_approved_at: string | null
           treasurer_id: string | null
           treasurer_notes: string | null
+          treasurer_signature: string | null
           updated_at: string
+          vp_1_approved_at: string | null
           vp_1_id: string | null
+          vp_1_signature: string | null
+          vp_2_approved_at: string | null
           vp_2_id: string | null
+          vp_2_signature: string | null
         }
         Insert: {
           amount: number
@@ -72,11 +78,17 @@ export type Database = {
           requester_id: string
           status?: Database["public"]["Enums"]["requisition_status"]
           title: string
+          treasurer_approved_at?: string | null
           treasurer_id?: string | null
           treasurer_notes?: string | null
+          treasurer_signature?: string | null
           updated_at?: string
+          vp_1_approved_at?: string | null
           vp_1_id?: string | null
+          vp_1_signature?: string | null
+          vp_2_approved_at?: string | null
           vp_2_id?: string | null
+          vp_2_signature?: string | null
         }
         Update: {
           amount?: number
@@ -90,11 +102,17 @@ export type Database = {
           requester_id?: string
           status?: Database["public"]["Enums"]["requisition_status"]
           title?: string
+          treasurer_approved_at?: string | null
           treasurer_id?: string | null
           treasurer_notes?: string | null
+          treasurer_signature?: string | null
           updated_at?: string
+          vp_1_approved_at?: string | null
           vp_1_id?: string | null
+          vp_1_signature?: string | null
+          vp_2_approved_at?: string | null
           vp_2_id?: string | null
+          vp_2_signature?: string | null
         }
         Relationships: []
       }
