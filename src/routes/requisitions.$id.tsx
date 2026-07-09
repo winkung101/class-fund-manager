@@ -472,15 +472,8 @@ function RequisitionDetail() {
               />
             </div>
 
-            {presidentInfo?.full_name && (
-              <div className="mt-10 flex justify-center">
-                <div className="text-center text-sm w-64">
-                  <p className="mb-16">รับทราบ</p>
-                  <p className="border-t border-black pt-1">{presidentInfo.full_name}</p>
-                  <p className="mt-1">( ประธานชั้นปี )</p>
-                </div>
-              </div>
-            )}
+
+
 
             <p className="text-center text-xs text-gray-600 mt-8">
               เอกสารอนุมัติสมบูรณ์เมื่อ {formatThaiDateTime(requisition.approved_at)}
